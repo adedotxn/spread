@@ -1,12 +1,16 @@
 import {useState} from 'react'
 import logo from './logo.svg';
 import './App.css';
-const XLSX = require('xlsx')
+import { useEffect } from 'react';
+const XLSX = require('xlsx');
+const Papa = require('papaparse')
 
 
 function App() {
 
   const [args, setArgs] = useState([]);
+
+  const [csv, setCsv] = useState([]);
 
   
   const make_cols = refstr => {
@@ -15,30 +19,25 @@ function App() {
     return o;
   }
 
+  const readCsv = (e) => {
+    console.log(e.target.files)
+    const file = e.target.files
+    console.log(file[0])
 
-  const readJson = (e) => {
-    // e.preventDefault();
-
-    // if(e.target.files) {
-    //   const reader = new FileReader();
-    //   console.log("reader", reader)
-    //   const rABS = !!reader.readAsBinaryString;
-    //   console.log("rabs", rABS)
-
-    //   const experiment = reader.readAsArrayBuffer = (e) => {
-    //     return e.name;
-    //   }
-    //   console.log("exppp", experiment)
-
-
-    //   reader.onload = (e) => {
-    //       /* parse the data */
-    //     const bstr = e.target.result;
-    //     console.log("bstr", bstr)
-
-    //   }
-    // }
+    Papa.parse(file[0], {
+      header: false,
+      skipEmptyLines: true,
+      complete: function(results) {
+      console.log(results.data)
+      setCsv(results.data);
+    }})
   }
+
+  useEffect(() => {
+    console.log("csvvv", csv)
+  }, [csv])
+  
+
     //getting data from the uploaded spreadsheet (.xlsx) file
   const readUploadFile = (e) => {
     e.preventDefault();
@@ -56,7 +55,7 @@ function App() {
         const data = XLSX.utils.sheet_to_json(ws, {
           header: 1
       });
-      // console.log("is this json", data)
+      console.log("is this json", data)
       setArgs(data)
       // setCols(make_cols(ws['!ref']));
       //console.log(cols)
@@ -69,17 +68,26 @@ function App() {
   // console.log("args", args)
   //console.log("inital data look",args)
 
+
   //turn the spreadsheet to a javascript object with the addresses as key and amounts as values
   const object = Object.fromEntries(args)
+  const csvObject = Object.fromEntries(csv)
 
   //extract the addresses into one array (the addresses are the keys)
   const addressesArray = Object.keys(object)
+  const csvAddressesArray = Object.keys(csvObject)
 
   //extract the amounts into one array (the amounts are the values)
   const amountsArray = Object.values(object)
+  const csvAmountArray = Object.values(csvObject)
+
 
   console.log("array of address:", addressesArray)
+  console.log("array of address:", csvAddressesArray)
+
   console.log("array of amounts:", amountsArray)
+  console.log("array of amounts:", csvAmountArray)
+
 
 
   return (
@@ -96,8 +104,8 @@ function App() {
 
 
       <div>
-        <input type="file" name="upload" id="" onChange={readJson} />
-        <label>JSON Upload</label>
+        <input type="file" name="upload" id="" onChange={readCsv} />
+        <label>CSV Upload</label>
       </div>
     </div>
   );
