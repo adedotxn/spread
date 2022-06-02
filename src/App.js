@@ -88,6 +88,27 @@ function App() {
   console.log("array of amounts:", amountsArray)
   console.log("array of amounts:", csvAmountArray)
 
+  const [ERC20Address, setERC20Transfer] = useState('')
+
+  const approveTrf = () => {
+    let sum = 0;
+    for (let i = 0; i < amountsArray.length; i++) {
+      sum += amountsArray[i];
+    }
+
+    if(sum !== 0 && ERC20Address !== '') {
+      console.log("SUM TO APPROVE",sum)
+      console.log("ERC20 ADDRESS", ERC20Address)
+
+      //just call the approve function in here for the erc20 contract with 
+      //approve(address of this spread contract, sum)
+      //so basically ERC20Address.approve([spread contract address], sum)
+    } else {
+      console.log("One of this tings is empty")
+    }
+
+   
+  }
 
 
   return (
@@ -107,7 +128,13 @@ function App() {
         <input type="file" name="upload" id="" onChange={readCsv} />
         <label>CSV Upload</label>
       </div>
+
+      <input type="text"  value={ERC20Address}  onChange = {e => setERC20Transfer(e.target.value)} />
+
+      <button onClick = {approveTrf}> Addd </button>
     </div>
+
+    
   );
 }
 
