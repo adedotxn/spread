@@ -2,8 +2,7 @@ import {useState} from 'react'
 import logo from './logo.svg';
 import './App.css';
 import { useEffect } from 'react';
-import toast from 'react-hot-toast';
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 const XLSX = require('xlsx');
 const Papa = require('papaparse')
 
@@ -21,39 +20,27 @@ function App() {
     return o;
   }
 
-  const readCsv = (e) => {
-    console.log(e.target.files)
-    const file = e.target.files
-    console.log(file[0])
-
-    if(e.target.files){
-      Papa.parse(file[0], {
-        header: false,
-        skipEmptyLines: true,
-        complete: function(results) {
-        console.log(results.data)
-        setCsv(results.data);
-      }})
-      toast.success(".csv File Uploaded", {
-        position: "bottom-left"
-      })
-    } else {
-      toast.error("Upload a .csv file")
-    }
-
-    
-  }
 
   useEffect(() => {
     console.log("csvvv", csv)
   }, [csv])
   
 
-    //getting data from the uploaded spreadsheet (.xlsx) file
+    // getting data from the uploaded spreadsheet (.xlsx) file or .csv file
   const readUploadFile = (e) => {
     e.preventDefault();
     // setuploading(true);
-    if(e.target.files) {
+    const fileTarget = e.target.files;
+    const file = fileTarget[0];
+
+    const xlsxType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    const csvType = "text/csv"
+
+    if(!e.target.files) {
+      return toast.error("Unsupported File")
+    }
+
+    if(file.type === xlsxType) {
       const reader = new FileReader();
       const rABS = !!reader.readAsBinaryString;
       reader.onload = (e) => {
@@ -66,6 +53,7 @@ function App() {
         const data = XLSX.utils.sheet_to_json(ws, {
           header: 1
       });
+
       console.log("is this json", data)
       setArgs(data)
       // setCols(make_cols(ws['!ref']));
@@ -77,9 +65,22 @@ function App() {
       toast.success(".xlsx File Uploaded", {
         position: "bottom-left"
       })
+    } else if (file.type === csvType) {
+      Papa.parse(file, {
+        header: false,
+        skipEmptyLines: true,
+        complete: function(results) {
+          console.log(results.data)
+          setCsv(results.data);
+      }})
+      toast.success(".csv File Uploaded", {
+        position: "bottom-left" 
+      })
     } else {
-        toast.error("Upload a .xlsx file")
+      toast.error("Uploaded file type unsupported")
     }
+
+
   }
   // console.log("cols",cols)
   // console.log("args", args)
@@ -138,18 +139,12 @@ function App() {
       <div className="input-section">
         <form action="">
           <input type="file" name="upload" className="file-input" id="file"
-          onChange={readUploadFile}/>
+          onChange={readUploadFile}
+          />
           <label for="file">Upload your spreasheet by clicking here</label>
           <button className="transfer-btn">Send</button>
         </form>
       </div>    
-
-
-
-      <div>
-        <input type="file" name="upload" id="" onChange={readCsv} />
-        <label>CSV Upload</label>
-      </div>
 
       <input type="text"  value={ERC20Address}  onChange = {e => setERC20Transfer(e.target.value)} />
 
