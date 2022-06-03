@@ -2,6 +2,8 @@ import {useState} from 'react'
 import logo from './logo.svg';
 import './App.css';
 import { useEffect } from 'react';
+import toast from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 const XLSX = require('xlsx');
 const Papa = require('papaparse')
 
@@ -24,13 +26,22 @@ function App() {
     const file = e.target.files
     console.log(file[0])
 
-    Papa.parse(file[0], {
-      header: false,
-      skipEmptyLines: true,
-      complete: function(results) {
-      console.log(results.data)
-      setCsv(results.data);
-    }})
+    if(e.target.files){
+      Papa.parse(file[0], {
+        header: false,
+        skipEmptyLines: true,
+        complete: function(results) {
+        console.log(results.data)
+        setCsv(results.data);
+      }})
+      toast.success(".csv File Uploaded", {
+        position: "bottom-left"
+      })
+    } else {
+      toast.error("Upload a .csv file")
+    }
+
+    
   }
 
   useEffect(() => {
@@ -62,6 +73,12 @@ function App() {
       }
       reader.readAsArrayBuffer(e.target.files[0])
       // setuploading(false);
+
+      toast.success(".xlsx File Uploaded", {
+        position: "bottom-left"
+      })
+    } else {
+        toast.error("Upload a .xlsx file")
     }
   }
   // console.log("cols",cols)
@@ -104,6 +121,7 @@ function App() {
       //approve(address of this spread contract, sum)
       //so basically ERC20Address.approve([spread contract address], sum)
     } else {
+      toast.error("Sum of Tokens = 0/Invalid address")
       console.log("One of this tings is empty")
     }
 
@@ -113,6 +131,10 @@ function App() {
 
   return (
     <div className="App">
+      <div>
+        <Toaster/>
+      </div>
+
       <div className="input-section">
         <form action="">
           <input type="file" name="upload" className="file-input" id="file"
