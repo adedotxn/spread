@@ -1,0 +1,29 @@
+
+
+.header {
+    display : flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: .5px solid grey;
+}
+
+.header h2 {
+    font-weight: 700;
+    letter-spacing: .2rem;;
+}
+
+.header ul {
+    list-style-type: none;
+    display: flex;
+    align-items: center;
+}
+
+.header ul li button {
+    border: 0px solid;
+    background-color: #34485E;
+    border-radius: .5rem;;
+    padding:.5rem .5rem;
+    font-size: .8rem;;
+    color: white;
+    margin-right:.5rem;
+}

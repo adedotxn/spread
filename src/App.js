@@ -7,7 +7,8 @@ import { ethers } from "ethers";
 import contractAddress from './contracts/contract_address.json'
 import abi from './contracts/abi.json'
 
-
+import Header from './components/header'
+import ConnectBtn from './components/connect-btn';
 const XLSX = require('xlsx');
 const Papa = require('papaparse')
 
@@ -142,17 +143,17 @@ function App() {
  }
 
   const address = contractAddress.contractAddress;
-  const setToken = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    await provider.send("eth_requestAccounts", []);
-    const signer = await provider.getSigner();
+  // const setToken = async () => {
+  //   const provider = new ethers.providers.Web3Provider(window.ethereum);
+  //   await provider.send("eth_requestAccounts", []);
+  //   const signer = await provider.getSigner();
 
-    const spread = new ethers.Contract(address, abi.abi, signer);
-    const tokenAddress = await spread.getToken(ERC20Address);
-    console.log(tokenAddress)
+  //   const spread = new ethers.Contract(address, abi.abi, signer);
+  //   const tokenAddress = await spread.getToken(ERC20Address);
+  //   console.log(tokenAddress)
 
-    setAddToken(true)
-  };
+  //   setAddToken(true)
+  // };
 
   const getTokenDetails = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -167,11 +168,28 @@ function App() {
 
   }
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const data = new FormData(e.target);
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = await provider.getSigner();
+
+    const spread = new ethers.Contract(address, abi.abi, signer);
+    const tokenAddress = await spread.getToken(data.get("token"));
+
+    console.log(tokenAddress)
+    console.log("with data", data.get("token"))
+    setAddToken(true)
+
+  }
+
   useEffect(() => {
-    if(addToken === true) {
+    if(addToken) {
       getTokenDetails()
     }
   }, [addToken])
+
+
 
 
 
@@ -182,27 +200,51 @@ function App() {
         <Toaster/>
       </div>
 
-      <div className="input-section">
-        <form action="">
+      <Header connectWallet = {connectWallet} connected = {connected} 
+        currentAccount = {currentAccount}
+      />
+
+      <main>
+        <section>
+          <p> an eth dapp for mass disbursing of tokens  </p> 
+
+          <span >Keep Spreading</span>  
+
+          {/* { connected ? 
+            <span >Keep Spreading</span>  
+          : 
+            <span><ConnectBtn connectWallet = {connectWallet} connected ={connected} currentAccount = {currentAccount} /> to continue</span> 
+          }  */}
+        </section>
+      </main>
+
+      
+       
+      <div className='inputs'>
+        <form  onSubmit={handleSubmit}>
+          <input type="text" name="token" value={ERC20Address}  onChange = {e => setERC20Address(e.target.value)} />
+          <button type="submit">Connect Token</button>
+        </form>
+
+        <div>
+          <h3>{tokenName}</h3>
+          <h3>{tokenSymbol}</h3>
+        </div>
+
+
+        {/* <form>
           <input type="file" name="upload" className="file-input" id="file"
           onChange={readUploadFile}
           />
-          <label for="file">Upload your spreasheet by clicking here</label>
+          <label>Upload your spreasheet by clicking here</label>
           <button className="transfer-btn">Send</button>
-        </form>
-      </div>    
+        </form> */}
 
-      <input type="text"  value={ERC20Address}  onChange = {e => setERC20Address(e.target.value)} />
 
-    <button onClick={connectWallet} >Connect Wallet </button>
-
-      <button onClick = {setToken}> Connect Token </button> <br/>
-
-      <h2> address : {ERC20Address}  </h2>
-      <h2> token name : {tokenName} </h2>
-      <h2> token symbol : {tokenSymbol} </h2>
-    </div>
-
+          
+        </div>
+      
+      </div>
     
   );
 }

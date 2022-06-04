@@ -1,38 +1,71 @@
-.App {
+header {
+  padding: 1rem;;
+}
+
+.App main {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  margin:3rem 0rem;
+  padding:0rem 2rem;
+}
+.App main section p{
+  font-size: 1.6rem;;
+  padding: .2rem 1.5rem;
+  line-height: 2rem;
+}
+
+.App main section span {
+  font-size: 1.4rem;
+  position: relative;
+  top:1.5rem;
+  line-height: 2rem;;
+}
+
+.App main section span button {
+  border:0px solid;
+  color: white;
+  font-size: 1rem;
+  font-family: 'Syncopate', sans-serif;
+  background-color: rgb(26, 26, 26);
+  padding-bottom: .2rem;;
+  border-bottom: 2px solid #ffff;
+}
+.App .inputs {
+  display: grid;
+  place-items: center;
+}
+.App .inputs form {
+  display: grid;
+  place-items: center;
+}
+
+.App .inputs form input {
+  width:80vw;
+  font-size: 1.3rem;;
+  padding:.3rem .8rem;
+  font-family: 'Syncopate', sans-serif;
+}
+
+.App .inputs form button {
+  margin-top:1rem;
+  border: 0px solid;
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: 'Syncopate', sans-serif;
+  background-color: rgb(26, 26, 26);
+  padding-bottom: .2rem;;
+  border-bottom: 2px solid #ffff;
+}
+.App .inputs div {
   text-align: center;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.App .inputs div h3 {
+  margin-top:.3rem;
+  padding: .5rem .7rem;
+  width:fit-content;
+  border-radius: .2rem;;
+  background-color: rgba(240, 248, 255, 0.301);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
