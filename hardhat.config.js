@@ -25,17 +25,17 @@ const defaultNetwork = "rinkeby"
   solidity: "0.8.4",
   defaultNetwork: `${defaultNetwork}`,
   networks: {
-    hardhat: {
-      chainId: 1337
-    },
+    // hardhat: {
+    //   chainId: 1337
+    // },
     rinkeby: {
       url: API_URL,
       accounts: [METAMASK_PRIVATE_KEY],
     }
   },
-  etherscan: {
-    apiKey: `${ETHERSCAN_API_KEY}`
-  },
+  // etherscan: {
+  //   apiKey: `${ETHERSCAN_API_KEY}`
+  // },
   paths: {
     artifacts: './src/artifacts',
   }

@@ -17,6 +17,8 @@ async function main() {
   })
 
   console.log("Contract address is : ", contract.address)
+  console.log("Deployer address is : ", deployer.address)
+
   await contract.deployed()
   const abi = fs.readFileSync(`src/artifacts/contracts/${contractName}.sol/${contractName}.json`);
 

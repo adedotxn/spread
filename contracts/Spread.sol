@@ -6,10 +6,11 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 
 contract Spread {
-    ERC20 private _token;
+    ERC20 public _token;
 
-    constructor(ERC20 token)  {
-        _token = token;
+    function getToken(ERC20 userToken) public returns(ERC20) {
+        _token = userToken;
+        return _token;
     }
 
     function getbalance() 
@@ -49,7 +50,7 @@ contract Spread {
             require(addressesTo[i] != address(0), "Invalid Address");
             require(amounts[i] != 0, "Invalid transfer amount");
             
-            require(_token.transferFrom(msg.sender,  addressesTo[i], amounts[i]* 10 ** 18), "Unable to transfer token to the account");
+            require(_token.transferFrom(msg.sender, addressesTo[i], amounts[i]* 10 ** 18), "Unable to transfer token to the account");
             sum += amounts[i];
         }
         return(sum, true);
