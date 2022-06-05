@@ -66,7 +66,7 @@ function App() {
         header: false,
         skipEmptyLines: true,
         complete: function(results) {
-          console.log(results.data)
+          console.log("CSV RESULTS : ",results.data)
           setArgs(results.data);
       }})
       toast.success(".csv File Uploaded", {
@@ -169,23 +169,31 @@ function App() {
   }
 
   const handleSubmit = async (e) => {
+
     e.preventDefault();
     const data = new FormData(e.target);
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = await provider.getSigner();
-
-    const spread = new ethers.Contract(address, abi.abi, signer);
+    if(data.get("token") === '') {
+      return toast.error("Invalid/No Token Address")
+    } else {
+      const spread = new ethers.Contract(address, abi.abi, signer);
     const tokenAddress = await spread.getToken(data.get("token"));
 
     console.log(tokenAddress)
     console.log("with data", data.get("token"))
     setAddToken(true)
 
+    
+    }
+    
+
   }
 
   useEffect(() => {
     if(addToken) {
       getTokenDetails()
+      toast.success("Token Found")
     }
   }, [addToken])
 
@@ -222,29 +230,37 @@ function App() {
        
       <div className='inputs'>
         <form  onSubmit={handleSubmit}>
+          <label> Input Token Address</label>
           <input type="text" name="token" value={ERC20Address}  onChange = {e => setERC20Address(e.target.value)} />
           <button type="submit">Connect Token</button>
         </form>
 
-        <div>
-          <h3>{tokenName}</h3>
-          <h3>{tokenSymbol}</h3>
-        </div>
+        {addToken ? 
+          <div>
+            <h3>{tokenName}</h3>
+            <h3>{tokenSymbol}</h3>
+          </div>
+          :
+          <div>
+            <h3>TOKEN NAME</h3>
+            <h3>TOKEN SYMBOL</h3>
+          </div>
+        }
+      </div>
 
-
-        {/* <form>
+      <div className='upload' >
+      { addToken && 
+        <form>
+          <label htmlFor="upload"> Upload .csv/.xlsx file</label>
           <input type="file" name="upload" className="file-input" id="file"
           onChange={readUploadFile}
-          />
-          <label>Upload your spreasheet by clicking here</label>
-          <button className="transfer-btn">Send</button>
-        </form> */}
-
-
-          
-        </div>
-      
+          /><br/>
+          <button className="button transfer-btn"> START SPREAD </button>
+        </form> 
+      }
       </div>
+      
+    </div>
     
   );
 }

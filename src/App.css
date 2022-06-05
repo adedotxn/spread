@@ -33,14 +33,17 @@ header {
 }
 .App .inputs {
   display: grid;
-  place-items: center;
+  /* place-items: center; */
+  margin-top:6rem;
+  padding:0 2rem;
 }
 .App .inputs form {
   display: grid;
-  place-items: center;
 }
 
 .App .inputs form input {
+  margin:0 auto;
+  margin-top:1rem;
   width:80vw;
   font-size: 1.3rem;;
   padding:.3rem .8rem;
@@ -48,18 +51,21 @@ header {
 }
 
 .App .inputs form button {
+  margin:0 auto;
   margin-top:1rem;
   border: 0px solid;
   color: white;
   font-size: 1rem;
   font-weight: 700;
+  width:fit-content;
   font-family: 'Syncopate', sans-serif;
   background-color: rgb(26, 26, 26);
   padding-bottom: .2rem;;
   border-bottom: 2px solid #ffff;
 }
 .App .inputs div {
-  text-align: center;
+  display: grid;
+  margin-top:2rem;
 }
 .App .inputs div h3 {
   margin-top:.3rem;
@@ -67,5 +73,38 @@ header {
   width:fit-content;
   border-radius: .2rem;;
   background-color: rgba(240, 248, 255, 0.301);
+}
+
+.upload {
+  padding:1rem 2rem;
+  margin-top: 3rem;;
+}
+
+.file-input {
+  border: 2px solid white;
+  font-size: 1.2rem;
+  padding:.3rem;
+  border-radius: .3rem;
+  margin-top:.5rem;
+}
+
+.transfer-btn {
+  margin:0 auto;
+  font-family: 'Syncopate', sans-serif;
+  background-color: white;
+  color: black;
+  margin-top:1rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: .3rem .5rem;
+  transition: all .15s linear 0s;
+  display: inline-block;
+  letter-spacing: 1px;
+  text-decoration: none;
+  border: 3px solid black;
+  box-shadow: 0.5rem .4rem 0 white;
+  cursor: pointer;
+  position:relative;
+  margin-right: 2rem;
 }
 

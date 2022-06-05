@@ -1,7 +1,6 @@
 import React from 'react'
 import styles from '../styles/header.module.css'
 import github from '../images/github-fill.svg'
-import {truncate} from '../utils/utils'
 import ConnectBtn from './connect-btn'
 
 function Header({connectWallet, connected, currentAccount}) {
@@ -11,7 +10,11 @@ function Header({connectWallet, connected, currentAccount}) {
 
         <nav>
             <ul>
-                <li> <ConnectBtn connectWallet = {connectWallet} connected ={connected} currentAccount = {currentAccount} /> </li>
+                 {connected ? 
+                    <li className={styles.connected}> <ConnectBtn connectWallet = {connectWallet} connected ={connected} currentAccount = {currentAccount} /> </li>
+                     :  
+                    <li className={styles.connect}> <ConnectBtn connectWallet = {connectWallet} connected ={connected} currentAccount = {currentAccount} /> </li>
+                  }
                 <li> <img src={github} alt="github" /> </li>
             </ul>
         </nav>

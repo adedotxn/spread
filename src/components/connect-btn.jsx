@@ -5,7 +5,7 @@ import {truncate} from '../utils/utils'
 function ConnectBtn({connected, currentAccount, connectWallet}) {
   return (
     <>
-        {connected ? <button> {truncate(currentAccount)} </button>  : <button onClick={connectWallet} >CONNECT WALLET</button>}
+        {connected ? <button> {truncate(currentAccount)} </button>  : <button onClick={connectWallet} >CONNECT<br/> WALLET</button>}
     </>
   )
 }
