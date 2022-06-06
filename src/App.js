@@ -7,6 +7,10 @@ import { ethers } from "ethers";
 import contractAddress from './contracts/contract_address.json'
 import abi from './contracts/abi.json'
 
+
+import right from './images/arrow-right.svg'
+import down from './images/arrow-down.svg'
+
 import Header from './components/header'
 import ConnectBtn from './components/connect-btn';
 const XLSX = require('xlsx');
@@ -23,7 +27,13 @@ function App() {
   const [connected, setConnected] = useState(false)
 
   const [addToken, setAddToken] = useState(false)
-  const [currentAccount, setCurrentAccount] = useState("")
+  const [currentAccount, setCurrentAccount] = useState("");
+
+  const [fileUploaded, setFileUploaded] = useState(false)
+  const [fileDetails, expandFileDetails] = useState(false);
+  const [amountSum, setAmountSum] = useState(0);
+
+  const [approved, setApproved] = useState(false)
 
 
 
@@ -55,9 +65,11 @@ function App() {
       });
 
       console.log("is this json", data)
+      setFileUploaded(true)
       setArgs(data)
       }
       reader.readAsArrayBuffer(e.target.files[0])
+
       toast.success(".xlsx File Uploaded", {
         position: "bottom-left"
       })
@@ -68,6 +80,7 @@ function App() {
         complete: function(results) {
           console.log("CSV RESULTS : ",results.data)
           setArgs(results.data);
+          setFileUploaded(true)
       }})
       toast.success(".csv File Uploaded", {
         position: "bottom-left" 
@@ -75,43 +88,48 @@ function App() {
     } else {
       toast.error("Uploaded file type unsupported")
     }
-
-
   }
 
-  //turn the spreadsheet to a javascript object with the addresses as key and amounts as values
-  const object = Object.fromEntries(args)
-
-  //extract the addresses into one array (the addresses are the keys)
+  const object = Object.fromEntries(args);
   const addressesArray = Object.keys(object)
-
-  //extract the amounts into one array (the amounts are the values)
   const amountsArray = Object.values(object)
+  function extract() {
+    console.log("array of address:", addressesArray)
+    console.log("array of amounts:", amountsArray)
 
-  console.log("array of address:", addressesArray)
-
-  console.log("array of amounts:", amountsArray)
-
-  const newArr = []
-  amountsArray.map(e => {
-    const allNum = Number(e)
-    return newArr.push(allNum)
-  })
-
-
-  const approveTrf = () => {
+    const newArr = []
+    amountsArray.map(e => {
+      const allNum = Number(e)
+      return newArr.push(allNum)
+    })
+    
     let sum = 0;
     for (let i = 0; i < newArr.length; i++) {
       sum += newArr[i];
+      setAmountSum(sum)
+      console.log("summ 0000", sum)
     }
+  }
 
-    if(sum !== 0 && ERC20Address !== '') {
-      console.log("SUM TO APPROVE",sum)
+  useEffect(() => {
+    if(fileUploaded) {
+      extract()
+    }
+  }, [fileUploaded])
+
+  
+
+
+  const approveTrf = () => {
+    if(amountSum !== 0 && ERC20Address !== '') {
+      console.log("SUM TO APPROVE",amountSum)
       console.log("ERC20 ADDRESS", ERC20Address)
 
       //just call the approve function in here for the erc20 contract with 
       //approve(address of this spread contract, sum)
       //so basically ERC20Address.approve([spread contract address], sum)
+      setApproved(true)
+      toast.success("Spreading approved, Proceed to Spread")
     } else {
       toast.error("Sum of Tokens = 0/Invalid address")
       console.log("One of this tings is empty")
@@ -143,18 +161,6 @@ function App() {
  }
 
   const address = contractAddress.contractAddress;
-  // const setToken = async () => {
-  //   const provider = new ethers.providers.Web3Provider(window.ethereum);
-  //   await provider.send("eth_requestAccounts", []);
-  //   const signer = await provider.getSigner();
-
-  //   const spread = new ethers.Contract(address, abi.abi, signer);
-  //   const tokenAddress = await spread.getToken(ERC20Address);
-  //   console.log(tokenAddress)
-
-  //   setAddToken(true)
-  // };
-
   const getTokenDetails = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     await provider.send("eth_requestAccounts", []);
@@ -169,7 +175,6 @@ function App() {
   }
 
   const handleSubmit = async (e) => {
-
     e.preventDefault();
     const data = new FormData(e.target);
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -183,11 +188,7 @@ function App() {
     console.log(tokenAddress)
     console.log("with data", data.get("token"))
     setAddToken(true)
-
-    
     }
-    
-
   }
 
   useEffect(() => {
@@ -205,7 +206,13 @@ function App() {
   return (
     <div className="App">
       <div>
-        <Toaster/>
+        <Toaster
+        toastOptions={{
+          className: '',
+          style: {
+            fontFamily : 'Fira Code',
+            },
+        }}/>
       </div>
 
       <Header connectWallet = {connectWallet} connected = {connected} 
@@ -255,7 +262,23 @@ function App() {
           <input type="file" name="upload" className="file-input" id="file"
           onChange={readUploadFile}
           /><br/>
-          <button className="button transfer-btn"> START SPREAD </button>
+
+          <div className="details">
+            <h3 onClick={() => expandFileDetails(!fileDetails) } >
+              Expand to see confirm details before spreading
+              {fileDetails ? <img src={down} alt="open"/> : <img src={right} alt="closed" /> }
+            </h3>
+
+            {fileDetails && <ul>
+              <li>Total amount to disburse<span> {amountSum}{tokenSymbol}</span></li>
+              <li>Spread to <span> {addressesArray.length} </span> addresses(es) </li>
+            </ul>}
+          </div>
+          
+          <div>
+            <button className='approve' onClick={approveTrf} > Approve {amountSum}{tokenSymbol} </button>
+            {approved ? <button className="transfer-btn"> START SPREAD </button> : null }
+          </div>
         </form> 
       }
       </div>

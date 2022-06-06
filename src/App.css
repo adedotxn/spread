@@ -40,7 +40,9 @@ header {
 .App .inputs form {
   display: grid;
 }
-
+.App .inputs form label {
+  font-family: 'Fira Code', monospace;
+}
 .App .inputs form input {
   margin:0 auto;
   margin-top:1rem;
@@ -86,6 +88,7 @@ header {
   padding:.3rem;
   border-radius: .3rem;
   margin-top:.5rem;
+  width:80vw;
 }
 
 .transfer-btn {
@@ -93,7 +96,7 @@ header {
   font-family: 'Syncopate', sans-serif;
   background-color: white;
   color: black;
-  margin-top:1rem;
+  margin-top:3rem;
   font-weight: 700;
   font-size: 1.1rem;
   padding: .3rem .5rem;
@@ -107,4 +110,40 @@ header {
   position:relative;
   margin-right: 2rem;
 }
+.upload form .details h3 {
+  font-weight: 400;
+  position: relative;
+  top:1rem;
+  font-size: 1rem;;
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;;
+  text-decoration: underline;
+}
+.details {
+  font-family: 'Fira Code', monospace;
+
+}
+.details ul {
+  list-style-type: circle;
+  display: grid;
+  margin-top: 1rem;
+  transition: all .15s linear 0s;
+
+}
+.details ul li {
+  display: flex;
+  align-items: center;
+  font-size: .9rem;;
+  margin-top: .2rem;
+}
+.details ul li span {
+  margin: 0 .3rem;;
+  padding: .2rem .2rem;
+  width:fit-content;
+  border-radius: .2rem;;
+  background-color: rgba(240, 248, 255, 0.301);
+}
+
+
 
