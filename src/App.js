@@ -2,7 +2,7 @@ import {useState} from 'react'
 import './App.css';
 import { useEffect } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-import { ethers, utils } from "ethers";
+import { ethers} from "ethers";
 
 import contractAddress from './contracts/contract_address.json'
 import abi from './contracts/abi.json'
@@ -13,7 +13,6 @@ import right from './images/arrow-right.svg'
 import down from './images/arrow-down.svg'
 
 import Header from './components/header'
-import ConnectBtn from './components/connect-btn';
 const XLSX = require('xlsx');
 const Papa = require('papaparse')
 
@@ -107,15 +106,12 @@ function App() {
     let sum = 0;
     for (let i = 0; i < newArr.length; i++) {
       sum += newArr[i];
-
-      // const toString = sum.toString()
-      // console.log("String", toString)
-      // const parseEthers = utils.parseEther(toString)
-
-      // setAmountSum(parseEthers)
-      // console.log("summ 0000", parseEthers)
     }
+    setAmountSum(sum)
   }
+
+
+
 
   useEffect(() => {
     if(fileUploaded) {
@@ -199,7 +195,7 @@ function App() {
       const signer = await provider.getSigner();
       const contract = new ethers.Contract(ERC20Address, erc20abi, signer);
 
-      const approve = await contract.approve(address, amountSum);
+      const approve = await contract.approve(address, ethers.utils.parseEther(`${amountSum.toString()}`));
       console.log("approve", approve)
       setApproved(true)
       toast.success("Spreading approved, Proceed to Spread")
