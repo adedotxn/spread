@@ -2,10 +2,11 @@ import {useState} from 'react'
 import './App.css';
 import { useEffect } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-import { ethers } from "ethers";
+import { ethers, utils } from "ethers";
 
 import contractAddress from './contracts/contract_address.json'
 import abi from './contracts/abi.json'
+import erc20abi from './contracts/erc20abi.json'
 
 
 import right from './images/arrow-right.svg'
@@ -34,6 +35,7 @@ function App() {
   const [amountSum, setAmountSum] = useState(0);
 
   const [approved, setApproved] = useState(false)
+  const [amounts, setAmounts] = useState([]);
 
 
 
@@ -70,9 +72,7 @@ function App() {
       }
       reader.readAsArrayBuffer(e.target.files[0])
 
-      toast.success(".xlsx File Uploaded", {
-        position: "bottom-left"
-      })
+      toast.success(".xlsx File Uploaded")
     } else if (file.type === csvType) {
       Papa.parse(file, {
         header: false,
@@ -82,9 +82,7 @@ function App() {
           setArgs(results.data);
           setFileUploaded(true)
       }})
-      toast.success(".csv File Uploaded", {
-        position: "bottom-left" 
-      })
+      toast.success(".csv File Uploaded")
     } else {
       toast.error("Uploaded file type unsupported")
     }
@@ -95,19 +93,27 @@ function App() {
   const amountsArray = Object.values(object)
   function extract() {
     console.log("array of address:", addressesArray)
-    console.log("array of amounts:", amountsArray)
 
     const newArr = []
     amountsArray.map(e => {
       const allNum = Number(e)
       return newArr.push(allNum)
     })
+
+    console.log("array of amounts:", newArr)
+    setAmounts(newArr)
+
     
     let sum = 0;
     for (let i = 0; i < newArr.length; i++) {
       sum += newArr[i];
-      setAmountSum(sum)
-      console.log("summ 0000", sum)
+
+      // const toString = sum.toString()
+      // console.log("String", toString)
+      // const parseEthers = utils.parseEther(toString)
+
+      // setAmountSum(parseEthers)
+      // console.log("summ 0000", parseEthers)
     }
   }
 
@@ -120,22 +126,7 @@ function App() {
   
 
 
-  const approveTrf = () => {
-    if(amountSum !== 0 && ERC20Address !== '') {
-      console.log("SUM TO APPROVE",amountSum)
-      console.log("ERC20 ADDRESS", ERC20Address)
 
-      //just call the approve function in here for the erc20 contract with 
-      //approve(address of this spread contract, sum)
-      //so basically ERC20Address.approve([spread contract address], sum)
-      setApproved(true)
-      toast.success("Spreading approved, Proceed to Spread")
-    } else {
-      toast.error("Sum of Tokens = 0/Invalid address")
-      console.log("One of this tings is empty")
-
-    }
-  }
 
   const connectWallet = async() => {
     if(!connected) {
@@ -197,6 +188,41 @@ function App() {
       toast.success("Token Found")
     }
   }, [addToken])
+
+  const approveTrf = async (e) => {
+    e.preventDefault()
+    if(amountSum !== 0 && ERC20Address !== '') {
+      console.log("SUM TO APPROVE",amountSum)
+      console.log("ERC20 ADDRESS", ERC20Address)
+
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = await provider.getSigner();
+      const contract = new ethers.Contract(ERC20Address, erc20abi, signer);
+
+      const approve = await contract.approve(address, amountSum);
+      console.log("approve", approve)
+      setApproved(true)
+      toast.success("Spreading approved, Proceed to Spread")
+    } else {
+      toast.error("Sum of Tokens = 0/Invalid address")
+      console.log("One of this tings is empty")
+      setApproved(false)
+    }
+  }
+
+  const spreadTokens = async (e) => {
+    e.preventDefault();
+
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const signer = await provider.getSigner();
+    if(addressesArray === [] && amounts === []) {
+      return toast.error("Empty addresses/amounts")
+    }
+    const contract = new ethers.Contract(address, abi.abi, signer);
+    const spreadCoins = await contract.batchTransfer(addressesArray, amounts);
+    console.log(spreadCoins)
+    toast.success("Spreading")
+  }
 
 
 
@@ -277,7 +303,7 @@ function App() {
           
           <div>
             <button className='approve' onClick={approveTrf} > Approve {amountSum}{tokenSymbol} </button>
-            {approved ? <button className="transfer-btn"> START SPREAD </button> : null }
+            {approved ? <button  onClick={spreadTokens} className="transfer-btn"> START SPREAD </button> : null }
           </div>
         </form> 
       }
