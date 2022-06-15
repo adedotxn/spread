@@ -147,6 +147,12 @@ function App() {
     }
  }
 
+ window.ethereum.on('accountsChanged', function (accounts) {
+  connectWallet();
+  
+  window.location.reload()
+})
+
   const address = contractAddress.contractAddress;
   const getTokenDetails = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -220,6 +226,43 @@ function App() {
     toast.success("Spreading")
   }
 
+  const [network, setNetwork] = useState('')
+  const [chainID, setChainID] = useState('')
+
+  const getNetwork =  async () => {
+    const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+    setChainID(chainId)
+    console.log("ChainId", chainId)
+
+    if(chainId === " ") {
+      return;
+    }
+
+
+    if(chainId === "0x4") {
+      setNetwork("Rinkeby Testnet")
+    } else if(chainId === "0x1") {
+      setNetwork("ETH Mainnet")
+
+    } else if(chainId === "0x2a") {
+      setNetwork("Kovan Testnet")
+
+    }else if(chainId === "0x3") {
+      setNetwork("Ropsten Testnet")
+
+    } else {
+      setNetwork("Unsupported")
+    }
+  }
+
+  useEffect(() => {
+    getNetwork()
+    console.log(network)
+  }, [network])
+
+
+
+
 
 
 
@@ -237,25 +280,16 @@ function App() {
         }}/>
       </div>
 
-      <Header connectWallet = {connectWallet} connected = {connected} 
+      <Header connectWallet = {connectWallet} connected = {connected} network = {network}
         currentAccount = {currentAccount}
       />
-
       <main>
         <section>
-          <p> an eth dapp for mass disbursing of tokens  </p> 
+          <p> an eth dapp for mass disbursing  tokens  </p> 
 
-          <span >Keep Spreading</span>  
-
-          {/* { connected ? 
-            <span >Keep Spreading</span>  
-          : 
-            <span><ConnectBtn connectWallet = {connectWallet} connected ={connected} currentAccount = {currentAccount} /> to continue</span> 
-          }  */}
+          <span>use token relative to the connected network</span>  
         </section>
       </main>
-
-      
        
       <div className='inputs'>
         <form  onSubmit={handleSubmit}>

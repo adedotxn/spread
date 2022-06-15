@@ -13,13 +13,16 @@ header {
   font-size: 1.6rem;;
   padding: .2rem 1.5rem;
   line-height: 2rem;
+  font-family: 'Fira Code', monospace;
 }
 
 .App main section span {
-  font-size: 1.4rem;
+  font-size: 1rem;
   position: relative;
   top:1.5rem;
   line-height: 2rem;;
+  font-family: 'Fira Code', monospace;
+  border-bottom: 1px solid white;
 }
 
 .App main section span button {
@@ -31,9 +34,12 @@ header {
   padding-bottom: .2rem;;
   border-bottom: 2px solid #ffff;
 }
+.info {
+  font-family: 'Fira Code', monospace;
+
+}
 .App .inputs {
   display: grid;
-  /* place-items: center; */
   margin-top:6rem;
   padding:0 2rem;
 }
@@ -49,7 +55,8 @@ header {
   width:80vw;
   font-size: 1.3rem;;
   padding:.3rem .8rem;
-  font-family: 'Syncopate', sans-serif;
+  font-family: 'Fira Code', monospace;
+
 }
 
 .App .inputs form button {
@@ -144,6 +151,13 @@ header {
   border-radius: .2rem;;
   background-color: rgba(240, 248, 255, 0.301);
 }
-
-
-
+@media screen and (min-width: 1024px) {
+  .App .inputs form input {
+    margin:0;
+    margin-top:1rem;
+    width:40vw;
+  }
+  .App .inputs form button {
+    margin: 1rem 0rem
+  }
+}
